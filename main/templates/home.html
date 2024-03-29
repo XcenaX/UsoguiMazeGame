@@ -1,4 +1,6 @@
 {% load static %}
+{% load socialaccount %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,7 +17,7 @@
         </div>
         <div class="header-actions">
             <input type="text" placeholder="Поиск..." class="search-input">
-            <a href="/accounts/google/login/" class="google-login">Войти через Google</a>
+            <a href="{% provider_login_url 'google'%}?next=/" class="google-login">Войти через Google</a>
         </div>
     </header>
 
