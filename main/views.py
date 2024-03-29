@@ -8,12 +8,11 @@ from django.utils.decorators import method_decorator
 from django.views.generic import DetailView
 
 
-class HomePage(LoginRequiredMixin, ListView):
+class HomePage(ListView):
     model = Game
     template_name = 'home.html'
     context_object_name = 'games'
     paginate_by = 20
-    login_url = '/accounts/login/'
 
     def get_queryset(self):
         return Game.objects.filter(is_active=True).order_by('-id')
