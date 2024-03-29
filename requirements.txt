@@ -1,0 +1,8 @@
+Django
+django-allauth
+django-cors-headers
+django-environ
+django-soft-delete
+gunicorn
+mysqlclient
+python-dateutil

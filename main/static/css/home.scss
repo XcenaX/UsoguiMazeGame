@@ -1,0 +1,74 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #333;
+    color: #fff;
+    padding: 10px 15px 10px 100px;
+    height: 70px;
+    position: relative;
+    .logo {
+        display: flex;
+        align-items: center;
+        height: 100%;
+
+        img {
+            height: 100%;
+            position: absolute;
+            left: 0;
+            width: auto; // Ширина автоматически адаптируется к высоте
+            object-fit: contain; // Изображение сохраняет пропорции
+        }
+    }
+
+    .header-actions {
+        display: flex;
+        align-items: center;
+
+        .google-login {
+            background-color: #dd4b39;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        
+        .search-input {
+            padding: 10px;
+            margin-right: 20px;
+            border: none;
+            border-radius: 5px;
+            outline: none;
+        }
+    }
+}
+
+
+.games-list {
+    .game {
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
+        padding: 10px;
+    }
+}
+
+.pagination {
+    .step-links {
+        a {
+            color: blue;
+            text-decoration: none;
+            margin-right: 10px;
+        }
+        .current {
+            margin-right: 10px;
+        }
+    }
+}

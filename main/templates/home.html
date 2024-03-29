@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usogui Maze Game</title>
+    <link rel="stylesheet" href="{% static 'css/home.css' %}"> 
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="{% static 'img/logo.jpg' %}" alt="Logo"> <!-- Укажите путь к логотипу -->
+            <h1>UsoguiMazeGame</h1>
+        </div>
+        <div class="header-actions">
+            <input type="text" placeholder="Поиск..." class="search-input">
+            <a href="/accounts/google/login/" class="google-login">Войти через Google</a>
+        </div>
+    </header>
+
+    <!-- Содержимое страницы -->
+    <div class="pagination">
+        {% if games.has_other_pages %}
+            <span class="step-links">
+                {% if games.has_previous %}
+                    <a href="?page=1">&laquo; первая</a>
+                    <a href="?page={{ games.previous_page_number }}">предыдущая</a>
+                {% endif %}
+                
+                <span class="current">
+                    Страница {{ games.number }} из {{ games.paginator.num_pages }}.
+                </span>
+                
+                {% if games.has_next %}
+                    <a href="?page={{ games.next_page_number }}">следующая</a>
+                    <a href="?page={{ games.paginator.num_pages }}">последняя &raquo;</a>
+                {% endif %}
+            </span>
+        {% endif %}
+    </div>
+    
+</body>
+</html>
