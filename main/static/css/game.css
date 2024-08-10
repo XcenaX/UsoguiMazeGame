@@ -1,0 +1,488 @@
+.boards-block{
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    padding: 50px 0;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+table {
+    border-collapse: collapse;
+    border: 3px solid black;
+}
+td {
+    width: 50px;
+    height: 50px;
+    /* height: 50px; */
+    position: relative;
+    padding: 0;
+    border: 2px solid darkgrey;
+}
+/* td::before {
+    content: '';
+    display: block;
+    padding-top: 100%; /* This ensures the cell height matches the width, making it square */
+}
+td > * {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+} */
+.border-right {
+    border-right: 3px solid red;
+}
+.border-bottom {
+    border-bottom: 3px solid red;
+}
+
+.board-cell {
+    width: 100px;
+    height: 100px;
+    border: 2px solid darkgrey;
+    position: relative;
+}
+
+.board-cell > .cell-content {
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    background-color: white;
+}
+
+.wall-horizontal, .wall-vertical {
+    background-color: darkgray;
+    position: absolute;
+    cursor: pointer;
+    pointer-events: none;
+}
+
+.wall-horizontal::before, .wall-vertical::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    cursor: pointer;
+    z-index: 1;
+    pointer-events: auto;
+    background-color: transparent;
+}
+
+.wall-horizontal {
+    width: 104%;
+    height: 5px;
+    top: -2.5px;
+    left: -2%;
+}
+
+.wall-horizontal::before {
+    height: 20px;
+    top: -8px;
+}
+
+.wall-vertical {
+    width: 5px;
+    height: 104%;
+    left: -2.5px;
+    top: -2%;
+}
+
+.wall-vertical::before {
+    width: 20px;
+    left: -8px;
+}
+
+.wall-horizontal:hover, .wall-vertical:hover{
+    background-color: rgb(207, 207, 27);
+}
+
+.wall-horizontal.active, .wall-vertical.active{
+    background-color: #d71515;
+    z-index: 10;
+}
+
+.entrance {
+    background-image: url(/static/img/entrance2.png);
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.exit {
+    background-image: url(/static/img/exit2.png);
+    background-size: 75%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.player {
+    background-image: url(/static/img/player.png);
+    background-size: contain;
+}
+
+.controls, .chat-controls {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+    flex-wrap: wrap;
+}
+
+.controls img {
+    width: 50px;
+    height: 50px;
+    margin: 5px;
+    cursor: pointer;
+    transition: filter 0.3s;
+}
+
+.controls img.active {
+    filter: brightness(1.5);
+}
+
+.chat-controls button img {
+    width: 20px;
+    height: 20px;
+    margin: 0;
+}
+
+
+.controls .button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, transform 0.2s;
+    cursor: pointer;
+    text-align: center;
+}
+
+.controls .button.active {
+    background-color: #d0f0c0; /* Светло-зеленый фон для выделения */
+    border: 2px solid #4caf50; /* Зеленая рамка */
+    transform: translateY(-2px); /* Легкое поднятие кнопки */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); /* Немного увеличенная тень */
+    filter: brightness(1.1); /* Повышенная яркость */
+}
+
+.controls .button:hover {
+    background-color: #e0e0e0;
+    transform: translateY(-2px);
+}
+
+.controls .button .text {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+}
+
+.controls.disabled .button {
+    background-color: #e0e0e0;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.controls.disabled .button img {
+    filter: grayscale(100%);
+}
+
+.controls.disabled .button .text {
+    color: #aaa;
+}
+
+.ready-button {
+    background-color: #a9a9a9; /* Серый цвет для неактивного состояния */
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: not-allowed;
+    transition: background-color 0.3s, transform 0.2s;
+    outline: none;
+    width: 100%;
+}
+
+.ready-button.active {
+    background-color: #4caf50; /* Зеленый цвет для активного состояния */
+    cursor: pointer;
+    transform: scale(1.05); /* Легкое увеличение размера кнопки */
+}
+
+.ready-button.active:hover {
+    background-color: #45a049; /* Немного более темный оттенок при наведении */
+}
+
+.chat-container {
+    width: 300px;
+    max-height: 500px;
+}
+
+.players-ready{
+    font-weight: bold;
+}
+
+#ready-form{
+    width: 100%;
+}
+
+#copy-link-button {
+    background-color: #4CAF50;
+    color: white;
+    width: 45%;
+    padding: 10px 0;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+#copy-link-button:hover {
+    background-color: #45a049;
+}
+
+#exit-match-button {
+    background-color: #f44336;
+    color: white;
+    width: 45%;
+    padding: 10px 0;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+#exit-match-button:hover {
+    background-color: #e53935;
+}
+
+.buttons{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.players-block{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.players-block .player-block{
+    padding: 10px 0px;
+    width: 25%;
+    background-color: rgb(169, 169, 169);
+    transition: 0.1s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #646464;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.players-block .player-block.right{
+    border-radius: 0 10px 10px 0;
+}
+
+.players-block .player-block.left{
+    border-radius: 10px 0 0 10px;
+}
+
+.players-block .player-block.ready{
+    background-color: rgb(68 175 39);
+    color: white;
+    border-color: rgb(40 103 22);
+}
+
+.players-block .vs-block{
+    font-size: 25px;
+    background-color: #848484;
+    padding: 18px 10px;
+    text-align: center;
+    font-weight: bold;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    border: 2px solid black;
+}
+
+.players-block .player-block .avatar{
+    width: 50px;
+    height: 50px;
+    background-image: url(../img/user.png);
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+}
+
+.players-block .player-block .nickname{
+    font-size: 18px;
+    font-weight: bold;
+    margin-left: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.chat-messages {
+    height: 360px;
+    overflow-y: auto;
+    padding: 0px 10px;
+    border: 1px solid #ccc;
+    border-bottom: 0;
+    background-color: white;
+}
+
+.chat-message{
+    flex-wrap: wrap;
+    margin: 15px 0;
+    border: 1px solid darkgray;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 5px;
+    padding: 10px;
+    background-color: #d5d5d5;
+    border-radius: 8px;
+    width: 75%;
+}
+
+.chat-time{
+    color: #5a5a5a;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.chat-text{
+    width: 100%;
+}
+
+.chat-user{
+    font-weight: bold;
+}
+
+.chat-input form{
+    display: flex;
+}
+
+#chat-text {
+    flex: 1;
+    padding: 10px;
+    border-radius: 0 0 0 4px;
+    border: 1px solid #ccc;
+    border-right: none;
+    outline: none;
+    color: black;
+    font-weight: bold;
+    background-color: #ededed;
+}
+
+#chat-form button {
+    padding: 0 15px;
+    border-radius: 0 0 4px 0;
+    border: 1px solid #ccc;
+    border-left: none;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#chat-form button:hover {
+    background-color: #45a049;
+}
+
+#chat-form button img {
+    width: 20px;
+    height: 20px;
+}
+
+.chat-header{
+    padding: 15px 20px;
+    background-color: #239e23;
+    color: white;
+    font-weight: bold;
+    font-size: 19px;
+}
+
+.spectator-message{
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.chat-message.self {
+    margin-left: auto;
+    background-color: #e7e7e7;
+}
+
+.chat-image{
+    width: 100%;
+    height: 0;
+    padding-bottom: 100%;
+    background-image: url(../img/svin.gif);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+@media (max-width: 900px) {
+    .controls {
+        flex-direction: row;
+    }
+
+    .chat-container, .buttons, #ready-form, .chat-controls {
+        width: 95%;
+    }
+    
+    td {
+        width: 30px;
+        height: 30px;
+    }
+
+    #chat-text {
+        padding: 15px;
+        font-size: 16px;
+    }
+
+.players-block .player-block{
+    width: 40%;
+    justify-content: center;
+}
+.players-block .vs-block{
+    width: 10%;
+    text-align: center;
+}
+
+.players-block .player-block .nickname{
+    font-size: 14px;
+}
+.players-block .player-block .avatar{
+    width: 25px;
+    height: 25px;
+}
+.players-block .vs-block{
+    padding: 8px 0;
+    font-size: 21px;
+}
+
+header{
+padding: 10px 5% !important;
+}
+}

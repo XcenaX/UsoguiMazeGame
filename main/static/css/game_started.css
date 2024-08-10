@@ -1,0 +1,78 @@
+.board-cell{
+    width: 80px;
+    height: 80px;
+}
+
+.buttons{
+    justify-content: center;
+}
+
+.wall-horizontal:hover, .wall-vertical:hover {
+    background-color: darkgray;
+}
+
+
+.wall-horizontal.active, .wall-vertical.active{
+    background-color: #d71515;
+}
+
+.wall-horizontal::before, .wall-vertical::before, .board-cell > .cell-content, .wall-horizontal, .wall-vertical{
+    cursor: not-allowed;
+}
+
+.cell-content.can-go{
+    background-color: darkgrey;
+    transition: 0.1s ease-in-out;
+    position: relative;
+    cursor: pointer;
+}
+
+.cell-content.can-go:hover{
+    background-color: #c0c0c0;
+}
+
+.cell-content.can-go > .icon{
+    opacity: 0;
+    transition: 0.1s ease-in-out;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 3%;
+    left: 3%;
+    background-image: url(../img/go.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    background-size: 40%;
+}
+
+.cell-content.can-go:hover > .icon{
+    opacity: 1;
+}
+
+.table-block .title {
+    text-align: center;
+    padding: 10px 0;
+    font-size: 20px;
+    font-weight: bold;
+    background-color: #239e23;
+    color: white;
+    border: 2px solid black;
+    border-bottom: 0;
+}
+
+#game-message{
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    margin: 20px 0;
+    width: 100%;
+    color: red;
+}
+
+@media (max-width: 900px) {
+    .board-cell{
+        width: 100px;
+        height: 100px;
+    }
+}

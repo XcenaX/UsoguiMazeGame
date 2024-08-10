@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  redis:
+    image: 'redis:latest'
+    ports:
+      - '6379:6379'
+
+  web:
+    build: .
+    environment:
+      - REDIS_HOST=redis
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - '8000:8000'
+    depends_on:
+      - redis
+
+  channels:
+    build: .
+    command: daphne -u /tmp/daphne.sock maze.asgi:application
+    volumes:
+      - .:/code
+    depends_on:
+      - redis
+    links:
+      - redis

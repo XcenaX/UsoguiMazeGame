@@ -1,0 +1,56 @@
+.auth-form {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+    h2 {
+        margin-top: 0px;
+    }
+
+    .title-block{
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        align-items: baseline;
+
+        a{
+            text-decoration: none;
+        }
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+    }
+
+    .form-actions {
+        text-align: right;
+
+        .btn {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+
+            &:hover {
+                background-color: darken(#007bff, 5%);
+            }
+        }
+    }
+}

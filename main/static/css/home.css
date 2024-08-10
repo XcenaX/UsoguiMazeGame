@@ -1,30 +1,51 @@
+html {
+  margin: auto;
+  width: 100%;
+  max-width: 1920px;
+  height: -webkit-fill-available;
+  background-color: white;
+  /* min-height: 100%;
+  background-image: url(/static/img/bg.webp);
+  background-size: cover;
+  position: relative; */
+}
+
 body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #f0f0f0;
+  /* background-color: #f0f0f0; */
+  background-color: #f8f7f7;
+  height: -webkit-fill-available;
 }
 
 header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #333;
+  background-color: #1a1615;
   color: #fff;
-  padding: 10px 15px 10px 100px;
+  padding: 10px 100px;
   height: 70px;
+  max-width: 100%;
+  margin: auto;
   position: relative;
+  box-sizing: border-box;
 }
 header .logo {
   display: flex;
   align-items: center;
   height: 100%;
+  gap: 20px;
+  position: relative;
+}
+header .logo a{
+  position: absolute;
+    width: 100%;
+    height: 100%;
 }
 header .logo img {
   height: 100%;
-  position: absolute;
-  left: 0;
-  width: auto;
   -o-object-fit: contain;
      object-fit: contain;
 }
@@ -32,13 +53,26 @@ header .header-actions {
   display: flex;
   align-items: center;
 }
-header .header-actions .google-login {
-  background-color: #dd4b39;
+header .header-actions .login, header .header-actions .logout {
   color: #fff;
   text-decoration: none;
   padding: 10px 15px;
   border-radius: 5px;
   font-weight: bold;
+}
+header .header-actions .login {
+  background-color: #4fdd39;
+}
+header .header-actions .logout {
+  background-color: #dd4b39;
+  border: 0;
+}
+header .header-actions select {
+  height: 36px;
+  border-radius: 5px;
+  padding: 0 10px;
+  font-weight: bold;
+  margin-right: 20px;
 }
 header .header-actions .search-input {
   padding: 10px;
@@ -46,6 +80,10 @@ header .header-actions .search-input {
   border: none;
   border-radius: 5px;
   outline: none;
+}
+
+table{
+  background-color: white;
 }
 
 .games-list .game {
@@ -61,4 +99,149 @@ header .header-actions .search-input {
 }
 .pagination .step-links .current {
   margin-right: 10px;
+}
+table td{
+  position: relative;
+}
+.notification-block {
+  padding: 20px 0;
+  margin-bottom: 20px;
+  background-color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.actions-block{
+  display: flex;
+  justify-content: space-between;
+  width: 40%;
+  margin: auto;
+  align-items: center;
+}
+
+.actions-block .leave-game, .actions-block .join-game{
+  width: 45%;
+}
+
+.actions-block .leave-game{
+  background-color: rgb(248, 0, 0);
+  border-color: #cc0000;
+}
+
+.actions-block .leave-game:hover{
+  background-color: #d90000;
+}
+
+.action-button {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  font-weight: bold;
+  font-size: 17px;
+}
+
+.action-button .join-game .half, .action-button .leave-game .half{
+  width: 50%;
+}
+
+.action-button .leave-game{
+  background-color: red;
+}
+
+.create-match{
+  margin-left: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+  font-weight: bold;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.create-match a{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+}
+
+.create-match .icon{
+  width: 15px;
+  height: 15px;
+  background-image: url(../img/plus.png);
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  margin-right: 10px;
+}
+
+.search-icon {
+  width: 38px;
+  height: 38px;
+  position: absolute;
+  background-image: url(/static/img/search.png);
+  background-size: 50%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #adadad;
+  border-radius: .25rem 0 0 .25rem;
+}
+
+label{
+  font-weight: bold;
+  margin: 0;
+}
+input[type="checkbox"]{
+  scale: 1.5;
+}
+.password-input{
+  left: -0.5%;
+    position: absolute;
+    top: -0.5%;
+    width: 101%;
+    height: 10;
+    height: 101%;
+}
+.games-list {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 20px;
+}
+.games-list .game-card {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 2%;
+  width: 25%;
+  margin-bottom: 3%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.games-list .game-card.disable {
+  opacity: 0;
+  padding-top: 0;
+  height: 0;
+  padding-bottom: 0;
+}
+.games-list .game-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+.games-list .game-card h2 {
+  margin-top: 0;
+}
+
+@media (max-width: 768px) {
+  .game-card {
+    width: calc(50% - 20px);
+  }
+}
+@media (max-width: 480px) {
+  .game-card {
+    width: 100%;
+  }
 }/*# sourceMappingURL=home.css.map */

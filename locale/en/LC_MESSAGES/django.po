@@ -1,0 +1,39 @@
+#
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2024-04-05 16:20+0000\n"
+"Last-Translator:   <>\n"
+"X-Translated-Using: django-rosetta 0.10.0\n"
+
+msgid "Лабиринт Лжи"
+msgstr "Maze of Lie"
+
+msgid "Поиск"
+msgstr "Search"
+
+msgid "Выйти"
+msgstr "Logout"
+
+msgid "Войти"
+msgstr "Sign In"
+
+msgid "Регистрация"
+msgstr "Sign Up"
+
+msgid "Вход"
+msgstr "Login"
+
+msgid "Рейтинг"
+msgstr "Rating"
+
+msgid "Победа"
+msgstr "Win"
+
+msgid "Поражение"
+msgstr "Lose"
+
+msgid "Страница"
+msgstr "Page"
+
+msgid "Все права защищены"
+msgstr "All rights deserved"

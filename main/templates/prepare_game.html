@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+{% load game_tags %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/game.css' %}">
+    <title>{% trans 'Лабиринт Лжи - Игра' %}</title>
+    <script>            
+        const updateGameStageUrl = "{% url 'update_game_stage' game.id %}";
+        const csrfToken = "{{ csrf_token }}";
+        let username = "{{ request.user.username }}";
+        let walls = {{my_board.walls}};
+        let entrance = {%if my_board.entrance_position%}{{my_board.entrance_position|safe}}{%else%}null{%endif%};
+        let exit = {%if my_board.exit_position%}{{my_board.exit_position|safe}}{%else%}null{%endif%};            
+        let ready = {%if me.ready%}true{%else%}false{%endif%};
+        let exit_link = "{% url 'exit_match' game.code %}";
+        let game_code = "{{game.code}}";
+
+        // let invite_link = "{% url 'join_match' game.id %}";
+        let host = window.location.protocol + "//" + window.location.host;
+        let invite_link = host + "{% url 'join_match' game.code %}?password={{game.password}}";
+
+        let boardWidth = 6; // в будущем может сделаю создание игр с досками разных размеров
+        let boardHeight = 6;
+        let maxWalls = 20;
+    </script>
+    <script src="{%static 'js/prepare_game.js'%}"></script>               
+    <script src="{%static 'js/home.js'%}"></script>               
+    <script src="{%static 'js/lobby_functions.js'%}"></script>               
+
+{% endblock %}
+
+{% block content %}
+<div class="boards-block">
+    <div class="players-block">
+        <div class="player-block {%if me.ready%}ready{%endif%} left" id="player-me">
+            <div class="avatar"></div>
+            <div class="nickname">{{me}}</div>
+        </div>
+        <div class="vs-block">VS</div>
+        <div class="player-block {%if opponent.ready%}ready{%endif%} right" id="player-opponent">
+            <div class="avatar"></div>
+            <div class="nickname">{%if opponent%}{{opponent}}{%else%}Waiting...{%endif%}</div>            
+        </div>
+    </div>
+    <div class="controls {%if me.ready%}disabled{%endif%}">
+        <div class="button {%if not me.ready%}active{%endif%}" onclick="setMode('wall')" id="wall-mode" alt="Wall">
+            <img src="{% static 'img/wall.png' %}">
+            <div class="text">Wall (<span id="wall-count">20</span>)</div>
+        </div>
+        <div class="button" onclick="setMode('entrance')" id="entrance-mode" alt="Entrance">
+            <img src="{% static 'img/entrance2.png' %}">
+            <div class="text">Entrance</div>
+        </div>
+        <div class="button" onclick="setMode('exit')" id="exit-mode" alt="Exit">
+            <img src="{% static 'img/exit2.png' %}">
+            <div class="text">Exit</div>
+        </div>
+        <div class="button" id="clear-board" onclick="clearBoard()">
+            <img src="{% static 'img/reset.png' %}" alt="Clear">
+            <div class="text">Clear</div>
+        </div>   
+        <div class="button" id="random-board" onclick="randomBoard()">
+            <img src="{% static 'img/dice.png' %}" alt="Random">
+            <div class="text">Random</div>
+        </div>        
+    </div>
+    
+    <table>
+        {% for i in 6|times %}
+            <tr>
+                {% for j in 6|times %}
+                    <td 
+                        id="board-cell-{{ i }}-{{ j }}"
+                        class="board-cell"
+                        data-x="{{ i }}" data-y="{{ j }}"
+                        onclick="handleCellClick({{ i }}, {{ j }})"
+                    >
+                        
+    
+                        {% if i > 0 %}
+                            <div 
+                                class="wall-horizontal 
+                                {% for wall in my_board.walls %}
+                                    {% if wall.0 == i and wall.1 == j and wall.2 == i|subtract:1 and wall.3 == j %}
+                                        active
+                                    {% endif %}
+                                {% endfor %}" 
+                                id="wall-horizontal-{{ i }}-{{ j }}" 
+                                onclick="placeWall({{ i }}, {{ j }}, 'horizontal')">
+                            </div>
+                        {% endif %}
+                        {% if j > 0 %}
+                            <div 
+                                class="wall-vertical 
+                                {% for wall in my_board.walls %}
+                                    {% if wall.0 == i and wall.1 == j and wall.2 == i and wall.3 == j|subtract:1 %}
+                                        active
+                                    {% endif %}
+                                {% endfor %}" 
+                                id="wall-vertical-{{ i }}-{{ j }}" 
+                                onclick="placeWall({{ i }}, {{ j }}, 'vertical')">
+                            </div>
+                        {% endif %}
+                        <div 
+                            class="cell-content 
+                                {% if my_board.entrance_position and my_board.entrance_position.x == i and my_board.entrance_position.y == j %}
+                                    entrance
+                                {% elif my_board.exit_position and my_board.exit_position.x == i and my_board.exit_position.y == j %}
+                                    exit
+                                {% endif %}" 
+                            id="cell-content-{{ i }}-{{ j }}">
+                        </div>
+                    </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>    
+
+    <div class="chat-controls">        
+        <div class="chat-container">
+            <div class="chat-header">
+                Chat
+            </div>
+            <div class="chat-messages" id="chat-messages">                
+                {% for group in grouped_messages %}
+                    <div class="chat-message-group">
+                        <div class="chat-message {% if group.0.user == request.user %}self{% endif %}">
+                            {% for message in group %}
+                                    {% if forloop.first %}
+                                        <span class="chat-user">{%if message.user %}{{message.user.username}}{%else%}Anonymous{%endif%}</span>
+                                        <span class="chat-time" data-timestamp="{{ message.created_at.isoformat }}">{{ message.created_at|date:"H:i" }}</span>
+                                    {% endif %}
+                                    {%if message.text == "activateSVIN" %}
+                                    <div class="chat-image"></div>
+                                    {%else%}
+                                    <span class="chat-text">{{ message.text }}</span>                                
+                                    {%endif%}
+                                                                 
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="chat-input">
+                <form id="chat-form" method="post" action="{% url 'send_message' game.id %}">
+                    {% csrf_token %}
+                    <input type="text" id="chat-text" name="text" placeholder="Enter your message" maxlength="200" required>
+                    <button type="submit">
+                        <img src="{% static 'img/send.png' %}" alt="Send">
+                    </button>
+                </form>
+            </div>
+        </div>
+        <div class="buttons">
+            <button id="copy-link-button" onclick="copyLink()">
+                <img src="{% static 'img/share.png' %}" alt="Share">
+                Invite link
+            </button>
+            <button id="exit-match-button" onclick="confirmExit()">
+                <img src="{% static 'img/leave.png' %}" alt="Leave">
+                Leave
+            </button>
+        </div>
+        <form id="ready-form" method="post" action="{% url 'update_game_stage' game.id %}">
+            {% csrf_token %}
+            <button id="submit-button" type="button" onclick="submitBoard()" class="ready-button" {%if me.ready %}disabled{%endif%}>Ready</button>            
+        </form>        
+    </div>
+</div>
+
+<script>
+    checkReady();
+    updateWallCount();
+    const gameId = "{{ game.id }}";
+</script>
+
+<script src="{%static 'js/chat.js'%}"></script>               
+
+{% endblock %}

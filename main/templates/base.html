@@ -1,0 +1,66 @@
+{% load i18n %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Dive into an exciting web-based game for two players where you construct a maze by placing walls, entrances, and exits. Your opponent is unaware of your maze layout and must navigate through it. Test your strategy and wits in this unique battle of minds.">
+    <link rel="icon" href="{%static 'img/icon.png'%}" type="image/png">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {%block styles%}{%endblock%}
+    <link rel="stylesheet" href="{% static 'css/home.css' %}"> 
+</head>
+<body>
+
+<header>
+    <div class="logo">
+        <a href="/"></a>
+        <img src="{% static 'img/logo.png' %}" alt="Logo" style="scale: 1.4;"> 
+        <img src="{% static 'img/logo-text.png' %}" alt="Logo">
+    </div>
+    
+    <div class="header-actions">
+        <!-- <input type="text" placeholder="Поиск..." class="search-input"> -->
+        <!-- Кнопка смены языка 
+        <form action="{ url 'set_language' }" method="post">{% csrf_token %}
+            <select class="form-control form-control-sm" id="exampleFormControlSelect1" name="language" onchange="this.form.submit();">
+               { get_current_language as LANGUAGE_CODE }
+               { get_available_languages as LANGUAGES }
+               { get_language_info_list for LANGUAGES as languages }
+               { for language in languages }
+                 <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected{% endif %}>
+                     {{ language.name_local }} ({{ language.code }})
+                 </option>
+               { endfor }
+            </select>
+        </form> -->
+        {% if user.is_authenticated %}
+        
+            <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="logout">{% trans 'Logout'%}</button>
+            </form>
+            {% else %}
+            <a href="{%url 'login'%}" class="login">{% trans 'Sign in'%}</a>
+        {% endif %}
+
+        
+    </div>
+</header>
+
+
+<main>
+    {% block content %}
+    {% endblock %}
+</main>
+
+<footer>
+    
+</footer>
+
+</body>
+</html>

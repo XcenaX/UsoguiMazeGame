@@ -18,7 +18,8 @@ from django.contrib import admin
 from django.urls import path, re_path, include
 from django.views.static import serve
 from django.conf import settings
-
+from django.conf.urls.i18n import i18n_patterns
+from django.utils.translation import gettext_lazy as _
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,4 +28,16 @@ urlpatterns = [
     re_path(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}),
     
     path('', include('main.urls')),
+
+    # path('rosetta/', include('rosetta.urls')),
 ]
+
+# urlpatterns = i18n_patterns(
+#     path(_('admin/'), admin.site.urls),
+#     path('rosetta/', include('rosetta.urls')),
+#     path('', include('main.urls')),
+#     path('i18n/', include('django.conf.urls.i18n')),
+
+#     re_path(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
+#     re_path(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}),
+# )

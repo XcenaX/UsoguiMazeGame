@@ -1,11 +1,203 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Игра Лабиринт</title>
-</head>
-<body>
-    
-</body>
-</html>
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+{% load game_tags %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/game.css' %}">
+    <link rel="stylesheet" href="{% static 'css/game_started.css' %}">
+    <title>{% trans 'Лабиринт Лжи - Игра' %}</title>
+    <script>            
+        const makeMoveUrl = "{% url 'make_move' game.id %}";
+        const csrfToken = "{{ csrf_token }}";
+        let username = "{{ request.user.username }}";
+        const gameId = "{{ game.id }}";
+
+        let walls = {{my_board.walls}};
+        let entrance = {%if my_board.entrance_position%}{{my_board.entrance_position|safe}}{%else%}null{%endif%};
+        let exit = {%if my_board.exit_position%}{{my_board.exit_position|safe}}{%else%}null{%endif%};            
+
+        let opponent_entrance = {%if opponent.board.entrance_position%}{{opponent.board.entrance_position|safe}}{%else%}null{%endif%};
+        let opponent_exit = {%if opponent.board.exit_position%}{{opponent.board.exit_position|safe}}{%else%}null{%endif%};            
+
+        let exit_link = "{% url 'exit_match' game.code %}";
+        let game_code = "{{game.code}}";
+        let invite_link = "{% url 'join_match' game.code %}";
+
+        let can_go = {{ can_go|safe }};
+    </script>
+    <script src="{%static 'js/home.js'%}"></script>               
+    <script src="{%static 'js/game.js'%}"></script>               
+    <script src="{%static 'js/lobby_functions.js'%}"></script>               
+
+{% endblock %}
+
+{% block content %}
+<div class="boards-block">
+    <div class="players-block">
+        <div class="player-block {%if me.current_turn%}ready{%endif%} left" id="player-me">
+            <div class="avatar"></div>
+            <div class="nickname">{{me}}</div>
+        </div>
+        <div class="vs-block">VS</div>
+        <div class="player-block {%if opponent.current_turn%}ready{%endif%} right" id="player-opponent">
+            <div class="avatar"></div>
+            <div class="nickname">{%if opponent%}{{opponent}}{%else%}Waiting...{%endif%}</div>            
+        </div>
+    </div>
+    <div class="table-block">
+        <div class="title">Your Maze</div>
+        <table>
+            {% for i in 6|times %}
+                <tr>
+                    {% for j in 6|times %}
+                        <td class="board-cell">                                    
+                            {% if i > 0 %}
+                                <div 
+                                    class="wall-horizontal 
+                                    {% for wall in my_board.walls %}
+                                        {% if wall.0 == i and wall.1 == j and wall.2 == i|subtract:1 and wall.3 == j %}
+                                            active
+                                        {% endif %}
+                                    {% endfor %}" 
+                                    id="wall-horizontal-{{ i }}-{{ j }}">
+                                </div>
+                            {% endif %}
+                            {% if j > 0 %}
+                                <div 
+                                    class="wall-vertical 
+                                    {% for wall in my_board.walls %}
+                                        {% if wall.0 == i and wall.1 == j and wall.2 == i and wall.3 == j|subtract:1 %}
+                                            active
+                                        {% endif %}
+                                    {% endfor %}" 
+                                    id="wall-vertical-{{ i }}-{{ j }}">
+                                </div>
+                            {% endif %}
+                                <div 
+                                    class="cell-content 
+                                        {% if my_board.entrance_position and my_board.entrance_position.x == i and my_board.entrance_position.y == j %}
+                                        entrance
+                                        {% elif my_board.exit_position and my_board.exit_position.x == i and my_board.exit_position.y == j %}
+                                        exit
+                                        {% elif opponent.board.player_position and opponent.board.player_position.x == i and opponent.board.player_position.y == j %}
+                                        player me
+                                        {% endif %}" 
+                                        id="me-cell-content-{{ i }}-{{ j }}"
+                                >
+                                </div>
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+                
+    <div class="table-block">
+        <div class="title">Opponent Maze</div>
+        <table>
+            {% for i in 6|times %}
+                <tr>
+                    {% for j in 6|times %}
+                        <td 
+                            id="opponent-board-cell-{{ i }}-{{ j }}"
+                            class="board-cell"
+                            data-x="{{ i }}" data-y="{{ j }}"
+                        >
+                            {% if i > 0 %}
+                                <div 
+                                    class="wall-horizontal opponent
+                                    {% for wall in my_board.spotted_walls %}
+                                    {% if wall.0 == i and wall.1 == j and wall.2 == i|subtract:1 and wall.3 == j %}
+                                    active
+                                    {% endif %}
+                                    {% endfor %}" 
+                                    id="opponent-wall-horizontal-{{ i }}-{{ j }}">
+                                </div>
+                            {% endif %}
+                            {% if j > 0 %}
+                                <div 
+                                    class="wall-vertical opponent
+                                    {% for wall in my_board.spotted_walls %}
+                                    {% if wall.0 == i and wall.1 == j and wall.2 == i and wall.3 == j|subtract:1 %}
+                                    active
+                                    {% endif %}
+                                    {% endfor %}" 
+                                    id="opponent-wall-vertical-{{ i }}-{{ j }}">
+                                </div>
+                            {% endif %}
+                            <div 
+                                class="cell-content 
+                                {% if opponent.board.entrance_position and opponent.board.entrance_position.x == i and opponent.board.entrance_position.y == j %}
+                                entrance
+                                {% elif opponent.board.exit_position and opponent.board.exit_position.x == i and opponent.board.exit_position.y == j %}
+                                exit
+                                {% elif my_board.player_position and my_board.player_position.x == i and my_board.player_position.y == j %}
+                                player opponent
+                                {% endif %}" 
+                                id="opponent-cell-content-{{ i }}-{{ j }}">
+                                <div class="icon"></div>
+                            </div>
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+
+<div class="chat-controls">        
+    <div class="chat-container">
+        <div class="chat-header">
+            Chat
+        </div>
+        <div class="chat-messages" id="chat-messages">                
+            {% for group in grouped_messages %}
+            <div class="chat-message-group">
+                <div class="chat-message {% if group.0.user == request.user %}self{% endif %}">
+                    {% for message in group %}
+                    {% if forloop.first %}
+                    <span class="chat-user">{%if message.user %}{{message.user.username}}{%else%}Anonymous{%endif%}</span>
+                    <span class="chat-time" data-timestamp="{{ message.created_at.isoformat }}">{{ message.created_at|date:"H:i" }}</span>
+                    {% endif %}
+                    {%if  message.text == "activateSVIN" %}
+                    <div class="chat-image"></div>
+                    {%else%}
+                    <span class="chat-text">{{ message.text }}</span>                                
+                    {%endif%}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="chat-input">
+            <form id="chat-form" method="post" action="{% url 'send_message' game.id %}">
+                {% csrf_token %}
+                <input type="text" id="chat-text" name="text" placeholder="Enter your message" maxlength="200" required>
+                <button type="submit">
+                        <img src="{% static 'img/send.png' %}" alt="Send">
+                    </button>
+                </form>
+            </div>
+        </div>
+        <div class="buttons">            
+            <button id="exit-match-button" onclick="confirmExit()">
+                <img src="{% static 'img/leave.png' %}" alt="Leave">
+                Leave
+            </button>
+        </div>                
+    </div>
+</div>
+
+<script src="{%static 'js/chat.js'%}"></script>   
+{%if not game.is_active%}
+<script>
+    Swal.fire({
+            title: 'Warning!',
+            text: "The game was finished! Winner is {{game.winner}}!\nGame will be deleted after 1 minute!",
+            icon: 'warning',
+            confirmButtonText: 'OK'
+        });
+</script>
+{%endif%}
+{% endblock %}
