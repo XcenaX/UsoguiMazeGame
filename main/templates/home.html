@@ -60,12 +60,12 @@
         </div>
         {%endif%}
         <h2 class="text-center title">Game rooms</h2>
-        <div class="mb-3 d-flex justify-content-between align-items-center">
-            <div>
+        <div class="filters-block">
+            <div class="private-game-checkbox">
                 <label for="filterPrivate" class="mr-2">Private Games</label>
                 <input type="checkbox" id="filterPrivate" class="custom-checkbox">
             </div>
-            <div style="display: flex;">
+            <div style="display: flex;" class="private-game-checkbox">
                 <div class="search-icon"></div>
                 <input type="text" id="searchInput" class="form-control" placeholder="Search" autocomplete="one-time-code" autocorrect="off" spellcheck="false" style="padding-left: 50px;">
                 <div class="create-match btn btn-primary" id="createGameBtn">                    
@@ -89,7 +89,7 @@
                     <td>{{game.name}}</td>
                     <td>{%if game.is_private%} Private {%else%} Public {%endif%}</td>
                     <td>{%if game.is_private%}<input type="text" name="passwordInput" id="passwordInput{{game.id}}" class="form-control password-input" placeholder="Enter game password" autocomplete="one-time-code">{%else%}No password required{%endif%}</td>
-                    <td>
+                    <td class="action-td">
                         <button class="btn btn-primary action-button join-game" data-game-id="{{ game.id }}" data-game-code="{{ game.code }}">Join</button>
                     </td>
                 </tr>
@@ -228,6 +228,68 @@
                     }
                 });
             });
+
+            $(document).on('click', '.signinBtn', function() {
+                Swal.fire({
+                    title: 'Sign in',
+                    html: `
+                        <form>                            
+                            <div class="form-group">
+                                <label for="nickname">{%trans 'Nickname'%}</label>
+                                <input type="text" id="nickname" name="username" required class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="account_password">{%trans 'Password'%}</label>
+                                <input type="password" id="account_password" name="password" required class="form-control">
+                            </div>      
+                            <span class="text">Don't have account?</span> <span class="link-text" id="registerBtn">Register</span>                      
+                        </form>
+                    `,
+                    showCancelButton: true,
+                    confirmButtonText: 'Sign in',
+                    preConfirm: () => {
+                        const nickname = Swal.getPopup().querySelector('#nickname').value;
+                        const accountPassword = Swal.getPopup().querySelector('#account_password').value;
+                        return { nickname, accountPassword };
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const data = result.value;                        
+                        Authorize(data);
+                    }
+                });            
+            });
+
+            $(document).on('click', '#registerBtn', function() {
+                Swal.fire({
+                    title: 'Regsiter',
+                    html: `
+                        <form>                            
+                            <div class="form-group">
+                                <label for="register_nickname">{%trans 'Nickname'%}</label>
+                                <input type="text" id="register_nickname" name="username" required class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="register_account_password">{%trans 'Password'%}</label>
+                                <input type="password" id="register_account_password" name="password" required class="form-control">
+                            </div>       
+                            <span class="text">Already have account?</span> <span class="link-text signinBtn">Sign in</span>                      
+                        </form>
+                    `,
+                    showCancelButton: true,
+                    confirmButtonText: 'Register',
+                    preConfirm: () => {
+                        const nickname = Swal.getPopup().querySelector('#register_nickname').value;
+                        const accountPassword = Swal.getPopup().querySelector('#register_account_password').value;
+                        return { nickname, accountPassword };
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const data = result.value;                        
+                        Authorize(data, 'register');
+                    }
+                });            
+            });            
         });
     </script>
 

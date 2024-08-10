@@ -32,41 +32,46 @@ from django.db.models import Count, Q, F
 class LoginView(View):
     template_name = "login.html"
 
-    def get(self, request, *args, **kwargs):
-        return render(request, self.template_name)
+    # def get(self, request, *args, **kwargs):
+    #     return render(request, self.template_name)
 
     def post(self, request, *args, **kwargs):
-        username = request.POST.get("username")
-        password = request.POST.get("password")
+        data = json.loads(request.body)        
+        username = data.get("nickname")
+        password = data.get("accountPassword")
+
+        if username == "" or password == "":
+            return JsonResponse({"success": False, "error": "Invalid nickname or password"}, status=400)
 
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect(reverse("home"))
+            return JsonResponse({"success": True})
         else:
-            return render(request, self.template_name, {
-                "error": "Неверный никнейм или пароль!"
-            })
+            return JsonResponse({"success": False, "error": "Invalid nickname or password"}, status=400)
+
         
 
 class RegisterView(View):
     template_name = "register.html"
 
-    def get(self, request, *args, **kwargs):
-        return render(request, self.template_name)
+    # def get(self, request, *args, **kwargs):
+    #     return render(request, self.template_name)
 
     def post(self, request, *args, **kwargs):
-        username = request.POST.get("username")
-        password = request.POST.get("password")
+        data = json.loads(request.body)        
+        username = data.get("nickname")
+        password = data.get("accountPassword")
+
+        if username == "" or password == "":
+            return JsonResponse({"success": False, "error": "Invalid nickname or password"}, status=400)
 
         if User.objects.filter(username=username).exists():
-            return render(request, self.template_name, {
-                "error": "Такой никнейм уже занят!"
-            })
+            return JsonResponse({"success": False, "error": "Nickname already taken"}, status=400)
 
         user = User.objects.create(username=username, password=make_password(password))
         login(request, user)
-        return redirect(reverse("home"))
+        return JsonResponse({"success": True})
           
 
 class LogoutView(View):
@@ -315,7 +320,7 @@ class SendMessageView(View):
             response_data = {
                 'success': True,
                 'chat_message': {
-                    'user': message.user.username if message.user else "Anonymous",
+                    'user': "Anonymous" if not authorized else message.user.username,
                     'text': message.text,
                     'created_at': message.created_at.isoformat(),
                 }
@@ -348,7 +353,6 @@ class ExitMatchView(View):
         game.save()
 
         if game.players() == 0 or game.game_stage == 2:
-            game.notify_game_update('delete')
             if opponent:
                 opponent.delete()
             game.delete()
@@ -363,6 +367,7 @@ class ExitMatchView(View):
             )
         
         if game.players() > 0:
+            game.notify_game_update('create')
             channel_layer = get_channel_layer()
             async_to_sync(channel_layer.group_send)(
                 f'game_{game.id}',
@@ -406,7 +411,7 @@ class JoinGame(View):
                 game.player_2 = player
             
             game.save()
-            
+            game.notify_game_update('delete')
             channel_layer = get_channel_layer()
             async_to_sync(channel_layer.group_send)(
                 f'game_{game.id}',
@@ -430,6 +435,9 @@ class JoinGame(View):
 
         if game.is_private and room_password != game.password:
             return redirect(reverse('home') + "?error=incorrect_password")
+        
+        if game.players() == 1:
+            game.notify_game_update('delete') # не показывать эту игру на главной странице так как она заполнена
 
         if not game.player_1:
             player = Player.objects.create(user=current_user)
@@ -482,6 +490,8 @@ class MakeMoveView(View):
         opponent_user_id = opponent.user
         if not opponent_user_id:
             opponent_user_id = opponent.session_key
+        else:
+            opponent_user_id = opponent.user.id
 
         if can_move_to(current_position, wanted_position, opponent_walls):
             me.board["player_position"] = wanted_position
@@ -505,24 +515,24 @@ class MakeMoveView(View):
 
                 def delete_game(game):
                     if game:
-                        game.notify_game_update('delete')
                         if game.player_1:
                             game.player_1.delete()
                         if game.player_2:
                             game.player_2.delete()
                         game.delete()
-                delete_game(game)
+                # delete_game(game)
 
                 # Поставить таймер на удаление игры через 1 минуту
-                # timer = threading.Timer(60.0, delete_game, [game])
-                # timer.start()
+                timer = threading.Timer(60.0, delete_game, [game])
+                timer.start()
             
             async_to_sync(channel_layer.group_send)(
                 f'user_{opponent_user_id}',
                 {
                     'type': 'opponent_info',
                     'position': me.board["player_position"],
-                    'can_go': []
+                    'can_go': [],
+                    "turn_ended": False
                 }
             )
 
@@ -543,6 +553,7 @@ class MakeMoveView(View):
                     'type': 'opponent_info',
                     'position': me.board["player_position"],
                     'can_go': opponent_can_go,
+                    'turn_ended': True
                 }
             )
 

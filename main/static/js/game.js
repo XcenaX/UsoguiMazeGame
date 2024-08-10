@@ -57,10 +57,6 @@ function updatePlayerPosition(playerPosition, me=false) {
         currentPlayerCell.classList.remove('player');
         currentPlayerCell.classList.remove(playerClass);
     }
-
-    console.log(playerPosition, opponent_entrance, opponent_exit);
-    console.log(playerPosition, entrance, exit);
-    console.log(me);
     
     
     if (me === false){
@@ -71,7 +67,6 @@ function updatePlayerPosition(playerPosition, me=false) {
     } else if (me === true){
         if ((playerPosition["x"] == entrance["x"] && playerPosition["y"] == entrance["y"])
             ||  (playerPosition["x"] == exit["x"] && playerPosition["y"] == exit["y"])){
-        console.log("return me true");
             return;
         } 
     }
@@ -104,6 +99,7 @@ function makeMove(x, y) {
         else{
             updateWalls(data.spotted_walls);
             clearCanGo();
+            SwitchPlayersTurn();
         }
         if(data.game_ended == true){
             clearCanGo();            
@@ -115,3 +111,14 @@ function makeMove(x, y) {
 document.addEventListener("DOMContentLoaded", function() {
     initializeCanGo(can_go);
 });
+
+function SwitchPlayersTurn(){
+    let players = document.querySelectorAll('.player-block'); 
+    if (players[0].classList.contains('ready')) {
+        players[0].classList.remove('ready');
+        players[1].classList.add('ready');
+    } else{
+        players[1].classList.remove('ready');
+        players[0].classList.add('ready');
+    }
+}

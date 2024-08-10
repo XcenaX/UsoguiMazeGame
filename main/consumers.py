@@ -16,7 +16,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.game_id = self.scope['url_route']['kwargs']['game_id']
         self.game_group_name = f'game_{self.game_id}'
 
-        if self.user.is_authenticated:
+        if self.user.id:
             self.user_group_name = f'user_{self.user.id}'
         else:
             session_key = self.scope['session'].session_key
@@ -49,10 +49,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         message_data = text_data_json['message']
 
-        if self.scope['user'].is_authenticated:
+        if self.scope['user'].id:
             user = self.scope['user']
         else:
             user = None
+            message_data["user"] = "Anonymous"
             session_key = self.scope['session'].session_key
             if not session_key:
                 session_key = self.scope['session'].session_key = self.scope['session'].create()
@@ -120,9 +121,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def opponent_info(self, event):
         position = event['position']
         can_go = event['can_go']
+        turn_ended = event['turn_ended']
         await self.send(text_data=json.dumps({
             'opponent_position': position,
             'can_go': can_go,
+            'turn_ended': turn_ended
         }))
     
     async def game_ended(self, event):

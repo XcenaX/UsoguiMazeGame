@@ -88,3 +88,38 @@ function CreateGame(data) {
     });
 }
 
+
+function Authorize(data, type='login') {
+    fetch(`/${type}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success == true) {            
+            window.location.reload();
+        } else {
+            Swal.fire({
+                title: 'Error',
+                text: data.error,
+                icon: 'error',
+                timer: 3000,
+                timerProgressBar: true,
+                showConfirmButton: false,
+                showCancelButton: false,
+                showCloseButton: false
+            });
+        }
+    })
+    .catch(error => {
+        Swal.fire({
+            title: 'Error',
+            text: 'Unknown error occurred.',
+            icon: 'error'
+        });
+    });
+}

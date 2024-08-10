@@ -51,7 +51,6 @@ function handleCellClick(x, y) {
 function placeWall(x, y, orientation) {
     if (ready) return;
     if (mode !== 'wall') return;
-    console.log(x, y, orientation);
     const wallId = orientation === 'horizontal' ? `wall-horizontal-${x}-${y}` : `wall-vertical-${x}-${y}`;
     const wallElement = document.getElementById(wallId);
     

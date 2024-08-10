@@ -43,6 +43,9 @@ document.addEventListener("DOMContentLoaded", function() {
         if (data.can_go){
             initializeCanGo(data.can_go);
         }
+        if (data.turn_ended === true){
+            SwitchPlayersTurn();
+        }
     } else if(data.game_started){
         window.location.reload();
     } else if(data.opponent_came == true){
@@ -58,7 +61,7 @@ document.addEventListener("DOMContentLoaded", function() {
             icon: 'warning',
             confirmButtonText: 'OK'
         });
-    }    
+    } 
 
     if(message && message_type == "chat_message"){
         const lastMessageGroup = chatMessages.lastElementChild;

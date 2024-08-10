@@ -72,7 +72,7 @@ td > * {
 }
 
 .wall-horizontal {
-    width: 104%;
+    width: 102%;
     height: 5px;
     top: -2.5px;
     left: -2%;
@@ -85,7 +85,7 @@ td > * {
 
 .wall-vertical {
     width: 5px;
-    height: 104%;
+    height: 102%;
     left: -2.5px;
     top: -2%;
 }
@@ -480,9 +480,5 @@ td > * {
 .players-block .vs-block{
     padding: 8px 0;
     font-size: 21px;
-}
-
-header{
-padding: 10px 5% !important;
 }
 }

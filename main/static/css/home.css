@@ -59,6 +59,7 @@ header .header-actions .login, header .header-actions .logout {
   padding: 10px 15px;
   border-radius: 5px;
   font-weight: bold;
+  cursor: pointer;
 }
 header .header-actions .login {
   background-color: #4fdd39;
@@ -168,6 +169,16 @@ table td{
   top: 0;
 }
 
+form .text, form .link-text{
+  font-weight: bold;
+  font-size: 15px;
+}
+
+form .link-text{
+  color: blue;
+  cursor: pointer;
+}
+
 .create-match .icon{
   width: 15px;
   height: 15px;
@@ -233,6 +244,47 @@ input[type="checkbox"]{
 }
 .games-list .game-card h2 {
   margin-top: 0;
+}
+
+.filters-block{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+.action-td{
+  width: auto;
+}
+
+.container{
+  max-width: unset;
+}
+
+
+@media (max-width: 600px) {
+  header{
+    padding: 10px 5% !important;
+  }
+  .actions-block{
+    width: 75%;
+  }
+  .private-game-checkbox{
+    margin-bottom: 1rem;
+    width: 100%;
+  }
+  table td{
+    font-size: 8px;
+  }
+  table tr{
+    font-size: 8px;
+  }
+  .action-button{
+    font-size: 14px;
+  }
+  .action-td{
+    padding: 0 35px !important;
+  }
 }
 
 @media (max-width: 768px) {

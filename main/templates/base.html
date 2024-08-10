@@ -45,7 +45,7 @@
                 <button type="submit" class="logout">{% trans 'Logout'%}</button>
             </form>
             {% else %}
-            <a href="{%url 'login'%}" class="login">{% trans 'Sign in'%}</a>
+            <div class="login signinBtn">{% trans 'Sign in'%}</div>
         {% endif %}
 
         
