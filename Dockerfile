@@ -9,5 +9,3 @@ RUN pip install -r requirements.txt
 COPY . /code/
 
 RUN python manage.py migrate
-
-CMD ["daphne", "-b", "0.0.0.0", "-p", "8080", "maze.asgi:application"]
