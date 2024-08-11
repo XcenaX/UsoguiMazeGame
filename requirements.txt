@@ -3,7 +3,7 @@ channels-redis
 daphne
 uWSGI
 drfasyncview>=0.2.3
-django>=4.1,<5.0
+django==5.0
 django-cors-headers
 django-celery-beat>=2.2,<2.5
 django-rosetta
