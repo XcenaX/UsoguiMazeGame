@@ -4,14 +4,12 @@ daphne
 uWSGI
 drfasyncview>=0.2.3
 django>=4.1,<5.0
-django-allauth
 django-cors-headers
 django-celery-beat>=2.2,<2.5
 django-rosetta
 django-environ
-django-soft-delete
 gunicorn
-mysqlclient
+# mysqlclient
 python-dateutil
 django-parler
 requests>=2.30.0
