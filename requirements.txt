@@ -2,15 +2,15 @@ channels
 channels-redis
 daphne
 uWSGI
-drfasyncview>=0.2.3
-django==5.0
+drfasyncview
+django
 django-cors-headers
-django-celery-beat>=2.2,<2.5
+django-celery-beat
 django-rosetta
 django-environ
 gunicorn
 # mysqlclient
 python-dateutil
 django-parler
-requests>=2.30.0
+requests
 Pillow
