@@ -27,3 +27,14 @@ services:
       - redis
     links:
       - redis
+  
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - /tmp:/tmp
+    ports:
+      - '80:80'
+    depends_on:
+      - web
+      - channels
