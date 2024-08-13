@@ -16,6 +16,7 @@
         let ready = {%if me.ready%}true{%else%}false{%endif%};
         let exit_link = "{% url 'exit_match' game.code %}";
         let game_code = "{{game.code}}";
+        let sessionKey = "{{session_key}}";
 
         // let invite_link = "{% url 'join_match' game.id %}";
         let host = window.location.protocol + "//" + window.location.host;
@@ -126,23 +127,23 @@
             <div class="chat-messages" id="chat-messages">                
                 {% for group in grouped_messages %}
                     <div class="chat-message-group">
-                        <div class="chat-message {% if group.0.user == request.user %}self{% endif %}">
+                        <div class="chat-message {% if group.0.user == request.user or group.0.session_key == request.session.session_key %}self{% endif %}">
                             {% for message in group %}
-                                    {% if forloop.first %}
-                                        <span class="chat-user">{%if message.user %}{{message.user.username}}{%else%}Anonymous{%endif%}</span>
-                                        <span class="chat-time" data-timestamp="{{ message.created_at.isoformat }}">{{ message.created_at|date:"H:i" }}</span>
-                                    {% endif %}
-                                    {%if message.text == "activateSVIN" %}
+                                {% if forloop.first %}
+                                    <span class="chat-user" data-session-key="{%if message.session_key %} {{ message.session_key }} {%else%} {{message.user.username}} {%endif%}">{%if message.user %}{{message.user.username}}{%else%}Anonymous{%endif%}</span>
+                                    <span class="chat-time" data-timestamp="{{ message.created_at.isoformat }}">{{ message.created_at|date:"H:i" }}</span>
+                                {% endif %}
+                                {% if message.text == "activateSVIN" %}
                                     <div class="chat-image"></div>
-                                    {%else%}
+                                {% else %}
                                     <span class="chat-text">{{ message.text }}</span>                                
-                                    {%endif%}
-                                                                 
+                                {% endif %}
                             {% endfor %}
                         </div>
                     </div>
                 {% endfor %}
             </div>
+            
             <div class="chat-input">
                 <form id="chat-form" method="post" action="{% url 'send_message' game.id %}">
                     {% csrf_token %}

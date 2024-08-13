@@ -55,12 +55,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const player = document.getElementById("player-opponent");
         player.classList.add('ready');       
     } else if(data.game_ended == true){
-        Swal.fire({
-            title: 'Warning!',
-            text: `Game Finished! Winner is ${data.winner}!\nGame will be deleted after 1 minute!`,
-            icon: 'warning',
-            confirmButtonText: 'OK'
-        });
+        window.location.reload();
     } 
 
     if(message && message_type == "chat_message"){
@@ -68,11 +63,14 @@ document.addEventListener("DOMContentLoaded", function() {
         const lastMessage = lastMessageGroup ? lastMessageGroup.querySelector('.chat-message') : null;
         const lastTimestamp = lastMessage ? new Date(lastMessage.querySelector('.chat-time').getAttribute('data-timestamp')) : null;
         const messageTimestamp = new Date(message.created_at);
-        const lastUser = lastMessage ? lastMessage.querySelector('.chat-user').textContent : null;
+        const lastUser = lastMessage ? lastMessage.querySelector('.chat-user').dataset.sessionKey : null;
+        const messageUser = message.session_key ? message.session_key : message.user;
+
+        console.log(lastMessage, lastUser, message);
     
         const formattedTime = messageTimestamp.getHours().toString().padStart(2, '0') + ':' + messageTimestamp.getMinutes().toString().padStart(2, '0');
     
-        if (lastTimestamp && (messageTimestamp - lastTimestamp) / 1000 <= 60 && lastUser === message.user) {
+        if (lastTimestamp && (messageTimestamp - lastTimestamp) / 1000 <= 60 && lastUser === messageUser) {
             // Добавляем новое сообщение в последнюю группу
             const newMessageText = document.createElement('span');
             newMessageText.classList.add('chat-text');
@@ -86,18 +84,18 @@ document.addEventListener("DOMContentLoaded", function() {
             newMessageGroup.classList.add('chat-message-group');
             const newMessage = document.createElement('div');
             newMessage.classList.add('chat-message');
-            if (message.user === username) {
+            if (message.session_key === sessionKey) {
                 newMessage.classList.add('self');
             }
             if (message.text == "activateSVIN"){
                 newMessage.innerHTML = `
-                    <span class="chat-user">${message.user}</span>
+                    <span class="chat-user" data-session-key="${message.session_key}">${message.user}</span>
                     <span class="chat-time" data-timestamp="${message.created_at}">${formattedTime}</span>
                     <div class="chat-image"></div>
                 `;
             } else{
                 newMessage.innerHTML = `
-                    <span class="chat-user">${message.user}</span>
+                    <span class="chat-user" data-session-key="${message.session_key}">${message.user}</span>
                     <span class="chat-time" data-timestamp="${message.created_at}">${formattedTime}</span>
                     <span class="chat-text">${message.text}</span>
                 `;
@@ -106,7 +104,7 @@ document.addEventListener("DOMContentLoaded", function() {
             chatMessages.appendChild(newMessageGroup);
         }
         chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
+    }    
 };
 
     chatSocket.onclose = function(e) {

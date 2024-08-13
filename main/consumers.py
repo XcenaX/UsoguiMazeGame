@@ -49,6 +49,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         message_data = text_data_json['message']
 
+        user_session_key = None
+
         if self.scope['user'].id:
             user = self.scope['user']
         else:
@@ -72,6 +74,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.check_and_delete_old_messages(game, MAX_MESSAGES_IN_CHAT)
 
         message_data['created_at'] = message.created_at.isoformat()
+        message_data['session_key'] = user_session_key
 
         await self.channel_layer.group_send(
             self.game_group_name,

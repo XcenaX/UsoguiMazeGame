@@ -257,12 +257,13 @@ input[type="checkbox"]{
   width: auto;
 }
 
-.container{
-  max-width: unset;
-}
+
 
 
 @media (max-width: 600px) {
+  .container{
+    max-width: unset;
+  }
   header{
     padding: 10px 5% !important;
   }

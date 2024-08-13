@@ -20,13 +20,14 @@ services:
 
   channels:
     build: .
-    command: daphne -u /tmp/daphne.sock maze.asgi:application
+    command: daphne -b 0.0.0.0 -p 8001 maze.asgi:application
     volumes:
       - .:/code
     depends_on:
       - redis
     links:
       - redis
+
   
   nginx:
     image: nginx:latest

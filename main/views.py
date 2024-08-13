@@ -77,7 +77,7 @@ class RegisterView(View):
 class LogoutView(View):
     def post(self, request, *args, **kwargs):
         logout(request)
-        return redirect(reverse("login"))
+        return redirect(reverse("home"))
 
 # {% provider_login_url 'google'%}?next=/
 
@@ -201,13 +201,13 @@ class GameView(View):
 
         for message in chat_messages:
             local_time = localtime(message.created_at)
-            if last_time and ((local_time - last_time).total_seconds() > 60 or last_user != message.user):
+            if last_time and ((local_time - last_time).total_seconds() > 60 or (last_user != message.user and last_user != message.session_key)):
                 if current_group:
                     grouped_messages.append(current_group)
                 current_group = []
             current_group.append(message)
             last_time = local_time
-            last_user = message.user
+            last_user = message.session_key if message.session_key else message.user
         
         if current_group:
             grouped_messages.append(current_group)
@@ -220,6 +220,7 @@ class GameView(View):
                 can_go = get_available_moves(current_turn_player.board["player_position"], current_turn_player.board["spotted_walls"])
 
         context = {     
+            "session_key": current_user if not authorized else None,
             "my_board": me.board,
             "grouped_messages": grouped_messages,
             "me": me,
@@ -320,6 +321,7 @@ class SendMessageView(View):
             response_data = {
                 'success': True,
                 'chat_message': {
+                    'session_key': user if not authorized else None,
                     'user': "Anonymous" if not authorized else message.user.username,
                     'text': message.text,
                     'created_at': message.created_at.isoformat(),
@@ -499,6 +501,14 @@ class MakeMoveView(View):
             if wanted_position["x"] == opponent.board["exit_position"]["x"] and wanted_position["y"] == opponent.board["exit_position"]["y"]:
                 game.is_active = False
                 game_ended = True
+
+                me.board["spotted_walls"] = opponent.board["walls"]
+                me.current_turn = False
+                opponent.board["spotted_walls"] = me.board["walls"]
+
+                me.save()
+                opponent.save()
+
                 if me.user:
                     winner = str(me.user)
                 game.winner = winner

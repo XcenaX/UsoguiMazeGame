@@ -102,7 +102,7 @@ function makeMove(x, y) {
             SwitchPlayersTurn();
         }
         if(data.game_ended == true){
-            clearCanGo();            
+            window.location.reload();
         }
     })
     .catch(error => console.error('Error:', error));
