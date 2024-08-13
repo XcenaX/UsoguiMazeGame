@@ -1,1 +1,47 @@
+# Django specific #
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+__pycache__/
 db.sqlite3
+*.sqlite3-journal
+
+# Django migrations
+*/migrations/__pycache__/
+*/migrations/*.pyc
+*/migrations/*.pyo
+*/migrations/*.pyd
+
+# Django media
+media/
+
+# Django static files
+staticfiles/
+static/
+
+# Local environment settings
+.env
+.env.*
+
+# VS Code
+.vscode/
+
+# Byte-compiled / optimized / DLL files #
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media
+static
+
+# VS Code #
+.vscode/
