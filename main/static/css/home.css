@@ -257,8 +257,28 @@ input[type="checkbox"]{
   width: auto;
 }
 
+.supportBtn{
+  padding: 10px 20px;
+  margin-left: 20px;
+  font-weight: bold;
+}
 
+.swal2-popup .swal2-content {
+  width: 100%;
+}
+.swal2-popup {
+  width: 400px; /* Уменьшает ширину модального окна */
+}
+.swal2-html-container .form-group {
+  text-align: left;
+}
+.swal2-html-container .form-group.form-check {
+  margin-left: 4px;
+}
 
+.title{
+  margin-bottom: 2rem;
+}
 
 @media (max-width: 600px) {
   .container{

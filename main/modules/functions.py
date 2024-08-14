@@ -1,5 +1,6 @@
 from collections import deque
-import uuid
+from django.db.models import Q
+from main.models import Game 
 
 def get_parameter(request, name):
     try:
@@ -31,6 +32,36 @@ def get_current_user(request):
     if not request.session.session_key:
         request.session.create()
     return request.session.session_key, False
+
+def get_current_game(current_user, authorized):
+    if authorized:
+        return Game.objects.filter(
+            Q(player_1__user=current_user) | Q(player_2__user=current_user)
+        ).first()
+
+    return Game.objects.filter(
+        Q(player_1__session_key=current_user) | Q(player_2__session_key=current_user)
+    ).first()
+    
+
+def get_available_games(current_user, authorized):
+    games_list = Game.objects.filter(
+        is_active=True
+    ).filter(
+        Q(player_1__isnull=True, player_2__isnull=False) |
+        Q(player_1__isnull=False, player_2__isnull=True)
+    ).order_by('-id')
+
+    if authorized:
+        games_list = games_list.exclude(
+            Q(player_1__user=current_user) | Q(player_2__user=current_user)
+        )
+    else:
+        games_list = games_list.exclude(
+            Q(player_1__session_key=current_user) | Q(player_2__session_key=current_user)
+        )
+
+    return games_list
 
 
 def is_path_available(entrance, exit, walls, board_size=6):

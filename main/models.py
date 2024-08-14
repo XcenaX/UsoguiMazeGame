@@ -284,3 +284,12 @@ class ChatMessage(models.Model):
     def __str__(self):
         username = self.user.username if self.user else "Anonymous"
         return f"Игра {self.game.code}. {self.created_at} ({username}): {self.text}"
+    
+
+class PaymentData(models.Model):
+    amount = models.CharField(max_length=10)
+    name = models.TextField(max_length=50, blank=True)
+    message = models.TextField(max_length=500, blank=True)
+
+    def __str__(self):
+        return f"{self.amount} from '{self.name}'"

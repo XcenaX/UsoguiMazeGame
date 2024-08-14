@@ -9,6 +9,7 @@
     <meta name="description" content="Dive into an exciting web-based game for two players where you construct a maze by placing walls, entrances, and exits. Your opponent is unaware of your maze layout and must navigate through it. Test your strategy and wits in this unique battle of minds.">
     <link rel="icon" href="{%static 'img/icon.png'%}" type="image/png">
 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     {%block styles%}{%endblock%}
@@ -20,7 +21,7 @@
 <header>
     <div class="logo">
         <a href="/"></a>
-        <img src="{% static 'img/logo.png' %}" alt="Logo" style="scale: 1.4;"> 
+        <!-- <img src="{% static 'img/logo.png' %}" alt="Logo" style="scale: 1.4;">  -->
         <img src="{% static 'img/logo-text.png' %}" alt="Logo">
     </div>
     
@@ -38,17 +39,19 @@
                  </option>
                { endfor }
             </select>
-        </form> -->
+        </form> -->        
+        
         {% if user.is_authenticated %}
         
-            <form action="{% url 'logout' %}" method="post" style="display: inline;">
-                {% csrf_token %}
-                <button type="submit" class="logout">{% trans 'Logout'%}</button>
-            </form>
-            {% else %}
-            <div class="login signinBtn">{% trans 'Sign in'%}</div>
+        <form action="{% url 'logout' %}" method="post" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" class="logout">{% trans 'Logout'%}</button>
+        </form>
+        {% else %}
+        <div class="login signinBtn">{% trans 'Sign in'%}</div>
         {% endif %}
-
+        
+        <a href="https://www.paypal.com/ncp/payment/XGUXJN5NZ4T82" class="btn btn-primary supportBtn" target="_blank">Support us</a>
         
     </div>
 </header>

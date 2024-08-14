@@ -13,9 +13,9 @@ from django.contrib.auth import authenticate, login, logout
 import json
 
 from django.shortcuts import get_object_or_404
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
-from main.models import Game, Player, ChatMessage, User
+from main.models import Game, PaymentData, Player, ChatMessage, User
 from main.forms import BoardForm
 
 from maze.settings import ERRORS_TYPES, MAX_MESSAGES_IN_CHAT
@@ -85,32 +85,11 @@ class HomePage(View):
     paginate_by = 20
 
     def get(self, request, *args, **kwargs):
-        current_user, authorized= get_current_user(request)
+        current_user, authorized = get_current_user(request)
         
-        games_list = Game.objects.filter(
-            is_active=True
-        ).filter(
-            Q(player_1__isnull=True, player_2__isnull=False) |
-            Q(player_1__isnull=False, player_2__isnull=True)
-        ).order_by('-id')
-
-        current_game = None
-
-        if authorized:
-            games_list = games_list.exclude(
-                Q(player_1__user=current_user) | Q(player_2__user=current_user)
-            )
-            current_game = Game.objects.filter(
-                Q(player_1__user=current_user) | Q(player_2__user=current_user)
-            ).first()
-        else:
-            games_list = games_list.exclude(
-                Q(player_1__session_key=current_user) | Q(player_2__session_key=current_user)
-            )
-            current_game = Game.objects.filter(
-                Q(player_1__session_key=current_user) | Q(player_2__session_key=current_user)
-            ).first()
-
+        current_game = get_current_game(current_user, authorized)
+        games_list = get_available_games(current_user, authorized)
+        
         paginator = Paginator(games_list, self.paginate_by)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
@@ -129,6 +108,37 @@ class HomePage(View):
         }
         return render(request, 'home.html', context)
 
+class QuickJoin(View):
+    def post(self, request, *args, **kwargs):
+        current_user, authorized= get_current_user(request)
+
+        join_game = get_available_games(current_user, authorized).first()
+
+        player = None
+        if authorized:
+            player = Player.objects.create(user=current_user, current_turn=True)
+        else:
+            player = Player.objects.create(session_key=current_user, current_turn=True)
+
+        if not join_game:
+            username = "Anonymous" if not authorized else current_user.username
+            join_game = Game.objects.create(
+                player_1=player,
+                name=f"{username}'s game",
+                is_private=False                
+            )
+
+            join_game.notify_game_update('create')
+        else:
+            if not join_game.player_1:
+                join_game.player_1 = player
+            elif not join_game.player_2:
+                join_game.player_2 = player
+            join_game.save()
+            join_game.notify_game_update('delete')
+
+        return redirect(reverse("game", args=[join_game.code]))
+        
 
 class CreateGame(View):
     def post(self, request, *args, **kwargs):

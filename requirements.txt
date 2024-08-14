@@ -14,3 +14,4 @@ python-dateutil
 django-parler
 requests
 Pillow
+paypalrestsdk
