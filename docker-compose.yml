@@ -31,8 +31,6 @@ services:
   nginx:
     image: nginx:latest
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-      - /tmp:/tmp
       - /etc/letsencrypt/live/mazeoflie.online:/etc/letsencrypt/live/mazeoflie.online
     ports:
       - '80:80'
