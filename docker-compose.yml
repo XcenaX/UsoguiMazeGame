@@ -32,6 +32,7 @@ services:
     image: nginx:latest
     volumes:
       - /etc/letsencrypt/live/mazeoflie.online:/etc/letsencrypt/live/mazeoflie.online
+      - ./nginx.conf:/etc/nginx/nginx.conf
     ports:
       - '8081:80'
       - '8443:443'
