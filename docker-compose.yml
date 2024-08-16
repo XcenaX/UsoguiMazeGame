@@ -28,14 +28,14 @@ services:
     links:
       - redis
 
-  nginx:
-    image: nginx:latest
-    volumes:
-      - /etc/letsencrypt/live/mazeoflie.online:/etc/letsencrypt/live/mazeoflie.online
-      - /etc/letsencrypt/options-ssl-nginx.conf:/etc/letsencrypt/options-ssl-nginx.conf
-    ports:
-      - '8081:80'
-      - '8443:443'
-    depends_on:
-      - web
-      - channels
+  # nginx:
+  #   image: nginx:latest
+  #   volumes:
+  #     - /etc/letsencrypt/live/mazeoflie.online:/etc/letsencrypt/live/mazeoflie.online
+  #     - /etc/letsencrypt/options-ssl-nginx.conf:/etc/letsencrypt/options-ssl-nginx.conf
+  #   ports:
+  #     - '8081:80'
+  #     - '8443:443'
+  #   depends_on:
+  #     - web
+  #     - channels
