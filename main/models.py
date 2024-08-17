@@ -6,6 +6,9 @@ from django.utils.translation import gettext_lazy as _
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
+
 
 CELL_STATUS = (
     (0, 'Пусто'),
@@ -294,3 +297,18 @@ class PaymentData(models.Model):
 
     def __str__(self):
         return f"{self.amount} from '{self.name}'"
+    
+
+@receiver(post_delete, sender=Game)
+def delete_related_objects(sender, instance, **kwargs):
+    ChatMessage.objects.filter(game=instance).delete()
+
+    if instance.player_1:
+        related_games_player_1 = Game.objects.filter(player_1=instance.player_1).count() + Game.objects.filter(player_2=instance.player_1).count()
+        if related_games_player_1 == 0:
+            instance.player_1.delete()
+
+    if instance.player_2:
+        related_games_player_2 = Game.objects.filter(player_1=instance.player_2).count() + Game.objects.filter(player_2=instance.player_2).count()
+        if related_games_player_2 == 0:
+            instance.player_2.delete()

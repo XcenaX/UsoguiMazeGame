@@ -367,9 +367,7 @@ class ExitMatchView(View):
         me = None
         game.save()
 
-        if game.players() == 0 or game.game_stage == 2:
-            if opponent:
-                opponent.delete()
+        if game.players() == 0 or game.game_stage == 2:            
             game.delete()
 
             channel_layer = get_channel_layer()
@@ -538,11 +536,7 @@ class MakeMoveView(View):
                 )
 
                 def delete_game(game):
-                    if game:
-                        if game.player_1:
-                            game.player_1.delete()
-                        if game.player_2:
-                            game.player_2.delete()
+                    if game:                        
                         game.delete()
                 # delete_game(game)
 
