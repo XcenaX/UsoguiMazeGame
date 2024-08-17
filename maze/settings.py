@@ -30,6 +30,7 @@ ALLOWED_HOSTS = ["*"]
 
 CSRF_TRUSTED_ORIGINS = [
     'https://mazeoflie.online',
+    'https://108.181.167.234'
     'http://127.0.0.1'
 ]
 
