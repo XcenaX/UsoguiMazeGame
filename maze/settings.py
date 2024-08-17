@@ -28,6 +28,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://mazeoflie.online',
+    'http://127.0.0.1'
+]
+
 AUTH_USER_MODEL = 'main.User'
 
 # Application definition
