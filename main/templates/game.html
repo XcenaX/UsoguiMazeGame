@@ -50,11 +50,14 @@
     </div>
     <div class="table-block">
         <div class="title">Your Maze</div>
-        <table>
+        <table class="my-board">
             {% for i in 6|times %}
                 <tr>
-                    {% for j in 6|times %}
-                        <td class="board-cell">                                    
+                    {% for j in 6|times %}                    
+                        <td 
+                        class="board-cell"
+                        id="me-board-cell-{{ i }}-{{ j }}"
+                        >                                    
                             {% if i > 0 %}
                                 <div 
                                     class="wall-horizontal 
@@ -98,7 +101,7 @@
                 
     <div class="table-block">
         <div class="title">Opponent Maze</div>
-        <table>
+        <table class="opponent-board">
             {% for i in 6|times %}
                 <tr>
                     {% for j in 6|times %}

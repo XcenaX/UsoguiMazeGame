@@ -46,6 +46,10 @@ document.addEventListener("DOMContentLoaded", function() {
         if (data.turn_ended === true){
             SwitchPlayersTurn();
         }
+        if (data.visited_cells){
+            ClearPaths(false);
+            CreatePaths(data.visited_cells, false);
+        }
     } else if(data.game_started){
         window.location.reload();
     } else if(data.opponent_came == true){

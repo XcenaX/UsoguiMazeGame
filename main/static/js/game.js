@@ -190,9 +190,14 @@ function getPath(directions) {
 }
 
 
-function ClearPaths() {
+function ClearPaths(opponent=true) {
     // Найти все элементы .path-img на доске соперника и удалить их
-    const pathImgs = document.querySelectorAll('.board-cell .cell-content .path-img');
+    let pathImgs = [];
+    if(opponent === true){
+        pathImgs = document.querySelectorAll('.opponent-board .board-cell .cell-content .path-img');
+    } else{
+        pathImgs = document.querySelectorAll('.my-board .board-cell .cell-content .path-img');
+    }
 
     pathImgs.forEach(pathImg => {
         pathImg.remove(); // Удаляет элемент .path-img
@@ -201,10 +206,15 @@ function ClearPaths() {
 
 
 
-function CreatePaths(paths) {
+function CreatePaths(paths, opponent=true) {
     // Расчет CSS классов для клеток на основе посещенных путей
     const optimizedPaths = removeRedundantCells(paths);
     const pathClasses = getPath(optimizedPaths);
+
+    let user = "opponent";
+    if(!opponent){
+        user = "me";
+    }
 
     console.log(pathClasses);
 
@@ -212,7 +222,8 @@ function CreatePaths(paths) {
     for (const cell in pathClasses) {
         let [x, y] = cell.split('-');
         let directions = pathClasses[cell].split(' ');
-        const cellElement = document.querySelector(`#opponent-cell-content-${x}-${y}`);
+
+        const cellElement = document.querySelector(`#${user}-cell-content-${x}-${y}`);
 
         // Проверка на наличие классов .exit, .entrance, или .player
         if (cellElement && !(cellElement.classList.contains('exit') || cellElement.classList.contains('entrance') || cellElement.classList.contains('player'))) {
