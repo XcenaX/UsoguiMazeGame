@@ -27,6 +27,7 @@
         let sessionKey = "{{session_key}}";
 
         let can_go = {{ can_go|safe }};
+        let visitedCells = {{ my_board.visited_cells|safe }};
     </script>
     <script src="{%static 'js/home.js'%}"></script>               
     <script src="{%static 'js/game.js'%}"></script>               
@@ -138,6 +139,7 @@
                                 player opponent
                                 {% endif %}" 
                                 id="opponent-cell-content-{{ i }}-{{ j }}">
+                                <div class="path-img"></div>
                                 <div class="icon"></div>
                             </div>
                         </td>

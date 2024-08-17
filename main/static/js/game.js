@@ -95,6 +95,8 @@ function makeMove(x, y) {
         if(data.success == true){
             updatePlayerPosition(data.player_position, me=false);
             initializeCanGo(data.can_go);
+            ClearPaths();
+            CreatePaths(data.visited_cells);
         }
         else{
             updateWalls(data.spotted_walls);
@@ -110,6 +112,7 @@ function makeMove(x, y) {
 
 document.addEventListener("DOMContentLoaded", function() {
     initializeCanGo(can_go);
+    CreatePaths(visitedCells);
 });
 
 function SwitchPlayersTurn(){
@@ -122,3 +125,105 @@ function SwitchPlayersTurn(){
         players[0].classList.add('ready');
     }
 }
+
+function removeRedundantCells(visitedCells) {
+    const optimizedCells = [];
+    
+    for (let i = 0; i < visitedCells.length - 1; i++) {
+        const currentCell = visitedCells[i];
+        const nextCell = visitedCells[i + 1];
+
+        // Если текущая клетка и следующая клетка совпадают, пропускаем текущую
+        if (!(currentCell[0] === nextCell[0] && currentCell[1] === nextCell[1])) {
+            optimizedCells.push(currentCell);
+        }
+    }
+
+    // Не забываем добавить последнюю клетку, так как она не будет проверена в цикле
+    optimizedCells.push(visitedCells[visitedCells.length - 1]);
+
+    return optimizedCells;
+}
+
+
+function getPath(directions) {
+    const path = {};
+
+    // Функция для определения направления между двумя клетками
+    function getDirection(from, to) {
+        if (from[0] > to[0]) return 'bottom';
+        if (from[0] < to[0]) return 'top';
+        if (from[1] > to[1]) return 'right';
+        if (from[1] < to[1]) return 'left';
+        return '';
+    }
+
+    // Основной цикл
+    for (let i = 0; i < directions.length; i++) {
+        const current = directions[i];
+        const key = `${current[0]}-${current[1]}`;
+
+        // Если ключ уже существует, значит, мы добавляем направления к уже существующим
+        let directionsSet = new Set(path[key] ? path[key].split(' ') : []);
+
+        // Проверяем предыдущую клетку
+        if (i > 0) {
+            const prev = directions[i - 1];
+            const directionFromPrev = getDirection(prev, current);
+            console.log(`From ${prev} to ${current}: ${directionFromPrev}`); // вывод промежуточных значений
+            directionsSet.add(directionFromPrev);
+        }
+
+        // Проверяем следующую клетку
+        if (i < directions.length - 1) {
+            const next = directions[i + 1];
+            const directionToNext = getDirection(next, current);
+            console.log(`From ${current} to ${next}: ${directionToNext}`); // вывод промежуточных значений
+            directionsSet.add(directionToNext);
+        }
+
+        // Обновляем направления для текущей клетки
+        path[key] = Array.from(directionsSet).join(' ');
+    }
+
+    return path;
+}
+
+
+function ClearPaths() {
+    // Найти все элементы .path-img на доске соперника и удалить их
+    const pathImgs = document.querySelectorAll('.board-cell .cell-content .path-img');
+
+    pathImgs.forEach(pathImg => {
+        pathImg.remove(); // Удаляет элемент .path-img
+    });
+}
+
+
+
+function CreatePaths(paths) {
+    // Расчет CSS классов для клеток на основе посещенных путей
+    const optimizedPaths = removeRedundantCells(paths);
+    const pathClasses = getPath(optimizedPaths);
+
+    console.log(pathClasses);
+
+    // Применение CSS классов к элементам .path-img на доске соперника
+    for (const cell in pathClasses) {
+        let [x, y] = cell.split('-');
+        let directions = pathClasses[cell].split(' ');
+        const cellElement = document.querySelector(`#opponent-cell-content-${x}-${y}`);
+
+        // Проверка на наличие классов .exit, .entrance, или .player
+        if (cellElement && !(cellElement.classList.contains('exit') || cellElement.classList.contains('entrance') || cellElement.classList.contains('player'))) {
+            // Создание нового элемента .path-img
+            directions.forEach(direction => {
+                const pathImgElement = document.createElement('div');
+                pathImgElement.classList.add('path-img', direction);
+                cellElement.appendChild(pathImgElement);
+            });
+        }
+    }
+}
+
+

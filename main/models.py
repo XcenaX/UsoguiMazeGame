@@ -173,7 +173,8 @@ def empty_board():
         "entrance_position": None,
         "exit_position": None,
         "walls": [],
-        "spotted_walls": [] # стены которые игрок обнаружил у противника
+        "spotted_walls": [], # стены которые игрок обнаружил у противника
+        "visited_cells": []
     }
 
 class Player(models.Model):

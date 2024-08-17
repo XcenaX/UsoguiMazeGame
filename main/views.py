@@ -284,6 +284,9 @@ class UpdateGameStageView(View):
             if game.ready_players() > 1:
                 me.board['player_position'] = opponent.board["entrance_position"]
                 opponent.board['player_position'] = me.board["entrance_position"]
+                
+                opponent.board["visited_cells"].append([me.board["entrance_position"]["x"], me.board["entrance_position"]["y"]])
+                me.board["visited_cells"].append([opponent.board["entrance_position"]["x"], opponent.board["entrance_position"]["y"]])
 
                 me.save()
                 opponent.save()
@@ -378,7 +381,7 @@ class ExitMatchView(View):
                 }
             )
         
-        if game.players() > 0:
+        if game.players() > 0 and game.game_stage != 2:
             game.notify_game_update('create')
             channel_layer = get_channel_layer()
             async_to_sync(channel_layer.group_send)(
@@ -507,6 +510,7 @@ class MakeMoveView(View):
 
         if can_move_to(current_position, wanted_position, opponent_walls):
             me.board["player_position"] = wanted_position
+            me.board["visited_cells"].append([wanted_position["x"], wanted_position["y"]])
             success = True
             if wanted_position["x"] == opponent.board["exit_position"]["x"] and wanted_position["y"] == opponent.board["exit_position"]["y"]:
                 game.is_active = False
@@ -551,6 +555,7 @@ class MakeMoveView(View):
                 {
                     'type': 'opponent_info',
                     'position': me.board["player_position"],
+                    'visited_cells': me.board["visited_cells"],
                     'can_go': [],
                     "turn_ended": False
                 }
@@ -572,6 +577,7 @@ class MakeMoveView(View):
                 {
                     'type': 'opponent_info',
                     'position': me.board["player_position"],
+                    'visited_cells': me.board["visited_cells"],
                     'can_go': opponent_can_go,
                     'turn_ended': True
                 }
@@ -585,6 +591,7 @@ class MakeMoveView(View):
             "success": success,
             "game_ended": game_ended,
             "can_go": available_moves,
+            'visited_cells': me.board["visited_cells"],
             "spotted_walls": me.board["spotted_walls"],
             "player_position": me.board["player_position"],
             "player": str(me.user),

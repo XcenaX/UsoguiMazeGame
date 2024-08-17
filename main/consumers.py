@@ -124,10 +124,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def opponent_info(self, event):
         position = event['position']
         can_go = event['can_go']
+        visited_cells = event['visited_cells']
         turn_ended = event['turn_ended']
         await self.send(text_data=json.dumps({
             'opponent_position': position,
             'can_go': can_go,
+            'visited_cells': visited_cells,
             'turn_ended': turn_ended
         }))
     
