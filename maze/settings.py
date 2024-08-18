@@ -28,7 +28,13 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
-CSRF_TRUSTED_ORIGINS = ["*"]
+CSRF_TRUSTED_ORIGINS = [
+    "https://108.181.167.234/",
+    "http://108.181.167.234/",
+    "https://mazeoflie.online/",
+    "http://mazeoflie.online/",
+    "http://127.0.0.1/"
+]
 
 AUTH_USER_MODEL = 'main.User'
 
