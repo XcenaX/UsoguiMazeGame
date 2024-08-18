@@ -8,7 +8,7 @@ from main.routing import websocket_urlpatterns
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'maze.settings')
 
 application = ProtocolTypeRouter({
-    "http": get_asgi_application(),
+    "https": get_asgi_application(),
     "websocket": AllowedHostsOriginValidator(
         AuthMiddlewareStack(URLRouter(websocket_urlpatterns))
     ),
