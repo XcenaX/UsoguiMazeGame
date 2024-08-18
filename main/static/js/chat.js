@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", function() {
 };
 
     chatSocket.onclose = function(e) {
-        console.error('Chat socket closed unexpectedly. Reloading page...');
+        console.error('Chat socket closed unexpectedly. Reloading page...', e);
         window.location.reload();
     };
 
