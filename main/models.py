@@ -182,7 +182,7 @@ def empty_board():
 
 class Player(models.Model):
     session_key = models.CharField(max_length=40, blank=True, null=True) # для анонимных пользователей
-    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь', blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, verbose_name='Пользователь', blank=True, null=True)
     board = models.JSONField("Board", default=empty_board)
     current_turn = models.BooleanField(default=False)
     ready = models.BooleanField(default=False)
