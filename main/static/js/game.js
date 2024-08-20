@@ -170,7 +170,6 @@ function getPath(directions) {
         if (i > 0) {
             const prev = directions[i - 1];
             const directionFromPrev = getDirection(prev, current);
-            console.log(`From ${prev} to ${current}: ${directionFromPrev}`); // вывод промежуточных значений
             directionsSet.add(directionFromPrev);
         }
 
@@ -178,7 +177,6 @@ function getPath(directions) {
         if (i < directions.length - 1) {
             const next = directions[i + 1];
             const directionToNext = getDirection(next, current);
-            console.log(`From ${current} to ${next}: ${directionToNext}`); // вывод промежуточных значений
             directionsSet.add(directionToNext);
         }
 
@@ -215,8 +213,6 @@ function CreatePaths(paths, opponent=true) {
     if(!opponent){
         user = "me";
     }
-
-    console.log(pathClasses);
 
     // Применение CSS классов к элементам .path-img на доске соперника
     for (const cell in pathClasses) {

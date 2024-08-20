@@ -69,8 +69,6 @@ document.addEventListener("DOMContentLoaded", function() {
         const messageTimestamp = new Date(message.created_at);
         const lastUser = lastMessage ? lastMessage.querySelector('.chat-user').dataset.sessionKey : null;
         const messageUser = message.session_key ? message.session_key : message.user;
-
-        console.log(lastMessage, lastUser, message);
     
         const formattedTime = messageTimestamp.getHours().toString().padStart(2, '0') + ':' + messageTimestamp.getMinutes().toString().padStart(2, '0');
     
