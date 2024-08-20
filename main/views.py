@@ -116,9 +116,9 @@ class QuickJoin(View):
 
         player = None
         if authorized:
-            player = Player.objects.create(user=current_user, current_turn=False)
+            player = Player.objects.create(user=current_user)
         else:
-            player = Player.objects.create(session_key=current_user, current_turn=False)
+            player = Player.objects.create(session_key=current_user)
 
         if not join_game:
             username = "Anonymous" if not authorized else current_user.username
@@ -127,6 +127,9 @@ class QuickJoin(View):
                 name=f"{username}'s game",
                 is_private=False                
             )
+
+            player.current_turn = True
+            player.save()
 
             join_game.notify_game_update('create')
         else:
