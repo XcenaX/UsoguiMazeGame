@@ -303,9 +303,8 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const gameSocket = new WebSocket(
-                //'wss://' + window.location.host + '/ws/games/'
-                'wss://108.181.167.234/ws/games/'
-                
+                'wss://' + window.location.host + '/ws/games/'
+                //'wss://108.181.167.234/ws/games/'
             );
 
             gameSocket.onmessage = function(e) {
