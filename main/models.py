@@ -303,12 +303,13 @@ class PaymentData(models.Model):
 def delete_related_objects(sender, instance, **kwargs):
     ChatMessage.objects.filter(game=instance).delete()
 
-    if hasattr(instance, 'player_1') and instance.player_1:
-        related_games_player_1 = Game.objects.filter(player_1=instance.player_1).count() + Game.objects.filter(player_2=instance.player_1).count()
-        if related_games_player_1 == 0:
-            instance.player_1.delete()
-
-    if hasattr(instance, 'player_2') and instance.player_2:
-        related_games_player_2 = Game.objects.filter(player_1=instance.player_2).count() + Game.objects.filter(player_2=instance.player_2).count()
-        if related_games_player_2 == 0:
-            instance.player_2.delete()
+    try:
+        instance.player_1.delete()
+    except:
+        pass
+    
+    try:
+        instance.player_2.delete()
+    except:
+        pass
+    
