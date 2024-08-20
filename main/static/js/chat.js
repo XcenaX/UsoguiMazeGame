@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function() {
     chatMessages.scrollTop = chatMessages.scrollHeight;
 
     let chatSocket = new WebSocket(
-        'wss://' + window.location.host + '/wss/game/' + gameId + '/'
+        'wss://' + window.location.host + '/ws/game/' + gameId + '/'
     );
 
     chatSocket.onmessage = function(e) {
