@@ -303,7 +303,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const gameSocket = new WebSocket(
-                'wss://' + window.location.host + '/wsы/games/'
+                'wss://' + window.location.host + '/wss/games/'
             );
 
             gameSocket.onmessage = function(e) {
