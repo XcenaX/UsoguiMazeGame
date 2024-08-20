@@ -116,9 +116,9 @@ class QuickJoin(View):
 
         player = None
         if authorized:
-            player = Player.objects.create(user=current_user, current_turn=True)
+            player = Player.objects.create(user=current_user, current_turn=False)
         else:
-            player = Player.objects.create(session_key=current_user, current_turn=True)
+            player = Player.objects.create(session_key=current_user, current_turn=False)
 
         if not join_game:
             username = "Anonymous" if not authorized else current_user.username
@@ -414,9 +414,9 @@ class JoinGame(View):
         if not game.player_1 or not game.player_2:
             player = None
             if authorized:
-                player = Player.objects.create(user=current_user)
+                player = Player.objects.create(user=current_user, current_turn=False)
             else:
-                player = Player.objects.create(session_key=current_user)
+                player = Player.objects.create(session_key=current_user, current_turn=False)
             
             if not game.player_1:                
                 game.player_1 = player
@@ -453,12 +453,12 @@ class JoinGame(View):
             game.notify_game_update('delete') # не показывать эту игру на главной странице так как она заполнена
 
         if not game.player_1:
-            player = Player.objects.create(user=current_user)
+            player = Player.objects.create(user=current_user, current_turn=False)
             game.player_1 = player
             game.save()
             return redirect(reverse('game', args=[code]))          
         elif not game.player_2:
-            player = Player.objects.create(user=current_user)
+            player = Player.objects.create(user=current_user, current_turn=False)
             game.player_2 = player
             game.save()
             return redirect(reverse('game', args=[code]))
