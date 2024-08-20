@@ -465,6 +465,15 @@ class JoinGame(View):
             game.player_2 = player
             game.save()
             return redirect(reverse('game', args=[code]))
+        
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            f'game_{game.id}',
+            {
+                'type': 'opponent_came',
+                'opponent': "Anonymous" if not authorized else current_user.username
+            }
+        )
 
         return redirect(reverse('home') + "?error=game_full")
 
