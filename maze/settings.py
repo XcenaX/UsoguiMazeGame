@@ -94,7 +94,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'maze.wsgi.application'
 ASGI_APPLICATION = 'maze.asgi.application'
-REDIS_HOST = os.environ.get('REDIS_HOST', '127.0.0.1')
+REDIS_HOST = '127.0.0.1'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 

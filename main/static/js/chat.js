@@ -3,8 +3,8 @@ document.addEventListener("DOMContentLoaded", function() {
     const chatMessages = document.getElementById('chat-messages');
     chatMessages.scrollTop = chatMessages.scrollHeight;
 
-    const chatSocket = new WebSocket(
-        'wss://' + window.location.host + '/ws/game/' + gameId + '/'
+    let chatSocket = new WebSocket(
+        'wss://' + window.location.host + '/wss/game/' + gameId + '/'
     );
 
     chatSocket.onmessage = function(e) {
@@ -112,8 +112,9 @@ document.addEventListener("DOMContentLoaded", function() {
 };
 
     chatSocket.onclose = function(e) {
-        console.error('Chat socket closed unexpectedly. Reloading page...', e);
-        window.location.reload();
+        console.error('Chat socket closed unexpectedly. Trying again...', e);
+        //window.location.reload();
+        
     };
 
     chatForm.addEventListener('submit', function(event) {
