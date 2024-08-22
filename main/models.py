@@ -302,7 +302,6 @@ class PaymentData(models.Model):
 @receiver(post_delete, sender=Game)
 def delete_related_objects(sender, instance, **kwargs):
     ChatMessage.objects.filter(game=instance).delete()
-
     try:
         instance.player_1.delete()
     except:

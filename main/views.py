@@ -361,14 +361,7 @@ class ExitMatchView(View):
 
         me, opponent = game.get_me_opponent(current_user)
 
-        if game.player_1 == me:
-            game.player_1 = None
-        elif game.player_2 == me:
-            game.player_2 = None
-
-        me.delete()
-        me = None
-        game.save()
+        me.delete()        
 
         if game.players() == 0 or game.game_stage == 2:            
             game.delete()
